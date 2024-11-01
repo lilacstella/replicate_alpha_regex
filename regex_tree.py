@@ -41,8 +41,16 @@ class RegexTree:
         if None in arr:
             return None
 
+        # empty alphabet means that is just simply won't pass, thus keep it as is?
+
         if node.value == "∪":
-            return f"({'|'.join(arr)})"
+            if len(node.children) == 2 and "ε" in arr:
+                if node.children[0].value == "ε":
+                    return arr[1]
+                else:
+                    return arr[0]
+
+            return f"[{''.join(arr)}]"
         if node.value == "⋅":
             return f"({''.join(arr)})"
         if node.value == "*":
@@ -55,7 +63,9 @@ class RegexTree:
             "☐": 10,
             "∪": 6,
             "⋅": 5,
-            "*": 5
+            "*": 5,
+            "(": 0,
+            ")": 0,
         }
 
         def sum_cost(node):

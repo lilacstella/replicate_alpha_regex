@@ -23,3 +23,16 @@ def test_display_single_child():
     c = RegexNode("*")
     c.children = [RegexNode("0")]
     assert c.display() == "*\n\t0\n"
+
+def test_display_nested_children():
+    d = RegexNode("∪")
+    d.children = [RegexNode("0"), RegexNode("∪")]
+    d.children[1].children = [RegexNode("1"), RegexNode("⋅"), RegexNode("0")]
+    d.children[1].children[1].children = [RegexNode("a"), RegexNode("b"), RegexNode("c")]
+    print()
+    print(d.display())
+    assert d.display() == "∪\n\t0\n\t∪\n\t\t1\n\t\t⋅\n\t\t\ta\n\t\t\tb\n\t\t\tc\n\t\t0\n"
+    d.children.reverse()
+    print()
+    print(d.display())
+    assert d.display() == "∪\n\t∪\n\t\t1\n\t\t⋅\n\t\t\ta\n\t\t\tb\n\t\t\tc\n\t\t0\n\t0\n"

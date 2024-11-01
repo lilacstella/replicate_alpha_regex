@@ -5,7 +5,9 @@ class RegexNode:
         self.children: list = []
 
     def display(self, level=0):
-        ret = "\t" * level + self.value + "\n"
+        # represent concat as not just cdot
+        value = "," if self.value == "⋅" else self.value
+        ret = f"{'\t' * level}{value}\n"
         for child in self.children:
             ret += child.display(level + 1)
         return ret

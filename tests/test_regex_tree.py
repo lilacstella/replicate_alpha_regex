@@ -23,11 +23,11 @@ def test_interpret_returns_correct_string(sample_tree):
     assert tree.interpret() == "☐"
     tree.root.value = "a"
     assert tree.interpret() == "a"
-    assert sample_tree.interpret() == "(a|b)"
+    assert sample_tree.interpret() == "[ab]"
     tree = sample_tree.deep_copy()
     tree.root.children[0].value = "⋅"
     tree.root.children[0].children = [RegexNode("0"), RegexNode("1")]
-    assert tree.interpret() == "((01)|b)"
+    assert tree.interpret() == "[(01)b]"
 
 def test_calculate_cost_returns_correct_value(sample_tree):
     assert sample_tree.cost > 0
