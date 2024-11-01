@@ -66,9 +66,11 @@ def test_read_benchmark(a, b, c):
     assert N == ["100", "X100", "100X", "X100X"]
 
 def test_open_file():
-    with open("tests/test_benchmarks_runner.py") as f:
-        content = f.read()
-    name, P, N = benchmarks_runner.read_benchmark(content)
-    assert name == "def read_benchmark(content):"
-    assert P == ["lines = content.splitlines()", "name = lines[0]", "P = []", "N = []", "currently_positive = True", "for line in lines[1:]:", "if line == '++':", "currently_positive = True", "elif line == '--':", "currently_positive = False", "elif currently_positive:", "P.append(line)", "else:", "N.append(line)", "return name, P, N"]
-    assert N == []
+    name, P, N = benchmarks_runner.read_benchmark(benchmarks_runner.open_file("benchmarks/no1_start_with_0"))
+    assert name == "w starts with 0"
+    assert P == ["0", "0X", "0XX"]
+    assert N == ["1", "1X", "1XX"]
+    name, P, N = benchmarks_runner.read_benchmark(benchmarks_runner.open_file("benchmarks/no19_not_contain_substring_100"))
+    assert name == "w does not contain 100 as a substring"
+    assert P == ["X", "XX", "0XX", "X1X", "XX1", "X101", "0X01X", "XX1X1X1"]
+    assert N == ["100", "X100", "100X", "X100X"]

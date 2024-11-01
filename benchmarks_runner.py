@@ -1,3 +1,8 @@
+def open_file(file_path):
+    with open(file_path, 'r') as file:
+        content = file.read()
+    return content
+
 def read_benchmark(content):
     lines = content.splitlines()
     name = lines[0]
