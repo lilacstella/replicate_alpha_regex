@@ -23,11 +23,11 @@ def test_interpret_returns_correct_string(sample_tree):
     assert tree.interpret() == "☐"
     tree.root.value = "a"
     assert tree.interpret() == "a"
-    assert sample_tree.interpret() == "[ab]"
+    assert sample_tree.interpret() == "(a|b)"
     tree = sample_tree.deep_copy()
     tree.root.children[0].value = "⋅"
     tree.root.children[0].children = [RegexNode("0"), RegexNode("1")]
-    assert tree.interpret() == "[(01)b]"
+    assert tree.interpret() == "((01)|b)"
 
 def test_calculate_cost_returns_correct_value(sample_tree):
     assert sample_tree.cost > 0
@@ -35,3 +35,17 @@ def test_calculate_cost_returns_correct_value(sample_tree):
     assert tree.cost == 10
     tree = RegexTree("0")
     assert tree.cost < sample_tree.cost
+
+def test_simplify():
+    # compress *
+    tree = RegexTree("*")
+    tree.root.children = [RegexNode("*")]
+    tree.root.children[0].children = [RegexNode("a")]
+    # tree.root.value = "*"
+    tree.root.simplify()
+    assert tree.interpret() == "(a*)"
+    tree.root.children[0].children = [RegexNode("*")]
+    tree.root.children[0].children[0].children = [RegexNode("*")]
+    tree.root.children[0].children[0].children[0].children[0].children = [RegexNode("a")]
+    tree.simplify()
+    assert tree.interpret() == "(a*)"

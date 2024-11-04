@@ -16,3 +16,9 @@ class RegexNode:
         new_node = RegexNode(self.value)
         new_node.children = [child.__deepcopy__() for child in self.children]
         return new_node
+
+    def simplify(self):
+        # compresses *
+        if self.value == "*" and self.children and self.children[0].value == "*":
+            return self.children[0].simplify()
+        self.children = [child.simplify() for child in self.children]

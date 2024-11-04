@@ -57,14 +57,15 @@ class GenerateRegex:
         # print(output)
         # also kills all dead states and redundant states
         # for state in output:
-        #     print(state.content.replace("☐", ".*"))
-        #     print(re.fullmatch(state.content.replace("☐", ".*"), p) for p in P)
-        # matches_all_patterns = lambda state: all(re.fullmatch(state.content.replace("☐", ".*"), p) for p in P)
-        # output = [state for state in output if matches_all_patterns(state)]
+            # print(state.content.replace("☐", ".*"))
+            # re.fullmatch(state.content.replace("☐", ".*"), p) for p in self.P:
+
+        matches_all_patterns = lambda state: all(re.fullmatch(state.content.replace("☐", ".*"), p) for p in self.P)
+        output = [state for state in output if matches_all_patterns(state)]
         # return an iterable of states
-        print("------------------------")
-        for i in output:
-            print(i.display())
+        # print("------------------------")
+        # for i in output:
+        #     print(i.display())
         return output
 
     def search_algorithm(self):

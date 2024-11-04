@@ -9,8 +9,9 @@ class RegexTree:
             return
 
         self.root = RegexNode(value)
-        self.cost = self.calculate_cost()
-        self.content = self.interpret()
+        # self.cost = self.calculate_cost()
+        # self.root.simplify()
+        # self.content = self.interpret()
 
     def set_root(self, root: RegexNode):
         self.root = root
@@ -50,7 +51,7 @@ class RegexTree:
                 else:
                     return arr[0]
 
-            return f"[{''.join(arr)}]"
+            return f"({'|'.join(arr)})"
         if node.value == "⋅":
             return f"({''.join(arr)})"
         if node.value == "*":
@@ -78,6 +79,9 @@ class RegexTree:
             return sum([sum_cost(child) for child in node.children]) + cost_map[node.value] * (len(node.children) - 1)
 
         return sum_cost(self.root)
+
+    def simplify(self):
+        self.root = self.root.simplify()
 
     def __lt__(self, other):
         return self.cost < other.cost

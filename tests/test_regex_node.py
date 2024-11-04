@@ -31,8 +31,8 @@ def test_display_nested_children():
     d.children[1].children[1].children = [RegexNode("a"), RegexNode("b"), RegexNode("c")]
     print()
     print(d.display())
-    assert d.display() == "∪\n\t0\n\t∪\n\t\t1\n\t\t⋅\n\t\t\ta\n\t\t\tb\n\t\t\tc\n\t\t0\n"
+    assert d.display() == "∪\n\t0\n\t∪\n\t\t1\n\t\t,\n\t\t\ta\n\t\t\tb\n\t\t\tc\n\t\t0\n"
     d.children.reverse()
     print()
     print(d.display())
-    assert d.display() == "∪\n\t∪\n\t\t1\n\t\t⋅\n\t\t\ta\n\t\t\tb\n\t\t\tc\n\t\t0\n\t0\n"
+    assert d.display() == "∪\n\t∪\n\t\t1\n\t\t,\n\t\t\ta\n\t\t\tb\n\t\t\tc\n\t\t0\n\t0\n"

@@ -55,7 +55,7 @@ def test_read_benchmark(a, b, c):
     name, P, N = benchmarks_runner.read_benchmark(a)
     assert name == "w starts with 0"
     assert P == ["0", "0X", "0XX"]
-    assert N == ["1", "1X", "1XX"]
+    assert N == ['1', '10', '11', '100', '101', '110', '111']
     name, P, N = benchmarks_runner.read_benchmark(b)
     assert name == "whatever"
     assert P == ["a", "b", "c"]
@@ -63,14 +63,14 @@ def test_read_benchmark(a, b, c):
     name, P, N = benchmarks_runner.read_benchmark(c)
     assert name == "w does not contain 100 as a substring"
     assert P == ["X", "XX", "0XX", "X1X", "XX1", "X101", "0X01X", "XX1X1X1"]
-    assert N == ["100", "X100", "100X", "X100X"]
+    assert N == ['100', '0100', '1100', '1000', '1001', '01000', '01001', '11000', '11001']
 
 def test_open_file():
     name, P, N = benchmarks_runner.read_benchmark(benchmarks_runner.open_file("benchmarks/no1_start_with_0"))
     assert name == "w starts with 0"
     assert P == ["0", "0X", "0XX"]
-    assert N == ["1", "1X", "1XX"]
+    assert N == ['1', '10', '11', '100', '101', '110', '111']
     name, P, N = benchmarks_runner.read_benchmark(benchmarks_runner.open_file("benchmarks/no19_not_contain_substring_100"))
     assert name == "w does not contain 100 as a substring"
     assert P == ["X", "XX", "0XX", "X1X", "XX1", "X101", "0X01X", "XX1X1X1"]
-    assert N == ["100", "X100", "100X", "X100X"]
+    assert N == ['100', '0100', '1100', '1000', '1001', '01000', '01001', '11000', '11001']
