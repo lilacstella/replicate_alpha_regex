@@ -1,7 +1,8 @@
 import heapq
 import re
 import collections
-from regex_tree import RegexTree, RegexNode
+from regex_tree import RegexTree
+from regex_node import RegexNode
 
 # P = ["0", "01", "011", "000", "00"]
 # N = ["1", "10", "11", "100", "101"]

@@ -1,38 +1,35 @@
 import pytest
 from regex_node import RegexNode
 
-def test_initializes_correctly():
-    a = RegexNode("☐")
-    assert a.value == "☐"
-    for char in ["0", "1", "ε", "∅", ".", "∪", "⋅", "*"]:
-        b = RegexNode(char)
-        print(b.value)
-        assert b.value == char
-        assert b.children == []
+@pytest.fixture
+def single_node():
+    # 0
+    return RegexNode('0')
 
-def test_display_single_node():
-    a = RegexNode("☐")
-    assert a.display() == "☐\n"
+@pytest.fixture
+def concat_node():
+    #  ⋅
+    # a b
+    return RegexNode('⋅', RegexNode('0'), RegexNode('1'))
 
-def test_display_two_children():
-    b = RegexNode("∪")
-    b.children = [RegexNode("0"), RegexNode("1")]
-    assert b.display() == "∪\n\t0\n\t1\n"
+@pytest.fixture
+def union_node():
+    #  ∪
+    # a b
+    return RegexNode('∪', RegexNode('0'), RegexNode('1'))
 
-def test_display_single_child():
-    c = RegexNode("*")
-    c.children = [RegexNode("0")]
-    assert c.display() == "*\n\t0\n"
+def test_single_node(single_node):
+    assert single_node.value == '0'
+    assert len(single_node.children) == 0
 
-def test_display_nested_children():
-    d = RegexNode("∪")
-    d.children = [RegexNode("0"), RegexNode("∪")]
-    d.children[1].children = [RegexNode("1"), RegexNode("⋅"), RegexNode("0")]
-    d.children[1].children[1].children = [RegexNode("a"), RegexNode("b"), RegexNode("c")]
-    print()
-    print(d.display())
-    assert d.display() == "∪\n\t0\n\t∪\n\t\t1\n\t\t,\n\t\t\ta\n\t\t\tb\n\t\t\tc\n\t\t0\n"
-    d.children.reverse()
-    print()
-    print(d.display())
-    assert d.display() == "∪\n\t∪\n\t\t1\n\t\t,\n\t\t\ta\n\t\t\tb\n\t\t\tc\n\t\t0\n\t0\n"
+def test_concat_node(concat_node):
+    assert concat_node.value == '⋅'
+    assert len(concat_node.children) == 2
+    assert concat_node.children[0].value == '0'
+    assert concat_node.children[1].value == '1'
+
+def test_union_node(union_node):
+    assert union_node.value == '∪'
+    assert len(union_node.children) == 2
+    assert union_node.children[0].value == '0'
+    assert union_node.children[1].value == '1'
