@@ -42,6 +42,11 @@ class RegexNode:
         arr = [child.interpret_content() for child in self.children]
 
         if self.value == "∪":
+            if self.children[0].value == 'ε':
+                return f'({self.children[1].interpret_content()}?)'
+            elif self.children[1].value == 'ε':
+                return f'({self.children[0].interpret_content()}?)'
+
             return f"({'|'.join(arr)})"
         if self.value == "⋅":
             return f"({''.join(arr)})"
@@ -56,8 +61,32 @@ class RegexNode:
             if self.children[0].value == '*':
                 return self.children[0].simplify()
 
-        new = []
+        if self.value == '⋅':
+            if any(child.value == '∅' for child in self.children):
+                return RegexNode('∅')
+            if self.children[0].value == 'ε':
+                return self.children[1].simplify()
+            elif self.children[1].value == 'ε':
+                return self.children[0].simplify()
+
+        if self.value == '∪':
+            if self.children[0].value == '∅':
+                return self.children[1].simplify()
+            elif self.children[1].value == '∅':
+                return self.children[0].simplify()
+            # don't simplify or empty string, it needs to => ?
+
+        simplified = []
         for child in self.children:
-            new.append(child.simplify())
-        self.children = new
+            simplified.append(child.simplify())
+        self.children = simplified
         return self
+
+def concat(left: RegexNode, right: RegexNode) -> RegexNode:
+    return RegexNode('⋅', left, right)
+
+def union(left: RegexNode, right: RegexNode) -> RegexNode:
+    return RegexNode('∪', left, right)
+
+def star(node: RegexNode) -> RegexNode:
+    return RegexNode('*', node)
