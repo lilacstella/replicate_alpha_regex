@@ -13,8 +13,8 @@ import itertools
 
 
 def replace_x_with_permutations(line):
-    count_X = line.count('X')
-    permutations = itertools.product('01', repeat=count_X)
+    count_x = line.count('X')
+    permutations = itertools.product('01', repeat=count_x)
     results = []
 
     for perm in permutations:
