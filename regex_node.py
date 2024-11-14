@@ -27,6 +27,14 @@ class RegexNode:
         new_node.children = [child.__deepcopy__() for child in self.children]
         return new_node
 
+    def print_tree(self, level=0):
+        # represent concat as not just cdot
+        value = "●" if self.value == "⋅" else self.value
+        ret = f"{'\t' * level}{value}\n"
+        for child in self.children:
+            ret += child.print_tree(level + 1)
+        return ret
+
     def calculate_cost(self) -> int:
         if self.value in COST_MAP.keys():
             val = COST_MAP[self.value]

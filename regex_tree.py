@@ -4,6 +4,9 @@ class RegexTree:
         self.content = None
         self.cost = -1
 
+    def __str__(self):
+        return self.root.print_tree()
+
     def get_cost(self) -> int:
         if self.cost == -1:
             self.cost = self.root.calculate_cost()
