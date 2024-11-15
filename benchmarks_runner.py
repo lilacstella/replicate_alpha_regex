@@ -52,13 +52,16 @@ def run_benchmark(f):
     if result is None:
         print("No solution found")
     else:
-        print(result.display())
-        print(result.content)
+        print(result)
+        print(result.get_content())
 
 def main():
-    # run_benchmark('no2_end_with_01')
+    # run_benchmark('no02_end_with_01')
 
-    for file in os.listdir('benchmarks'):
+    import os
+    files = os.listdir('benchmarks')
+    files.sort()
+    for file in files:
         run_benchmark(file)
 
 if __name__ == '__main__':
