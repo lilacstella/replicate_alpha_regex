@@ -1,11 +1,16 @@
+from regex_node import RegexNode
+
 class RegexTree:
-    def __init__(self, root):
+    def __init__(self, root = RegexNode('☐')):
         self.root = root
         self.content = None
         self.cost = -1
 
     def __str__(self):
         return self.root.print_tree()
+
+    def __lt__(self, other):
+        return self.get_cost() < other.get_cost()
 
     def get_cost(self) -> int:
         if self.cost == -1:
