@@ -2,6 +2,7 @@ import heapq
 import re
 import collections
 import copy
+import time
 from regex_tree import RegexTree
 from regex_node import RegexNode
 
@@ -74,8 +75,11 @@ class GenerateRegex:
         return output
 
     def search_algorithm(self):
+        start_time = time.time()
         w: list = [RegexTree()]  # Priority queue
         while w:
+            if time.time() - start_time > 30:
+                return None
             # Get the next element from the priority queue
             s: RegexTree = heapq.heappop(w)
 

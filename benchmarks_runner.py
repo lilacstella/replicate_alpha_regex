@@ -1,4 +1,5 @@
 from search import GenerateRegex
+import time
 
 
 def open_file(file_path):
@@ -47,16 +48,21 @@ def read_benchmark(content):
 def run_benchmark(f):
     name, p, n = read_benchmark(open_file(f'benchmarks/{f}'))
     solution = GenerateRegex(p, n)
-    print(f"{f}: {name}")
-    result = solution.search_algorithm()
-    if result is None:
-        print("No solution found")
-    else:
-        print(result)
-        print(result.get_content())
+    with open('results.txt', 'a') as file:
+        file.write(f"{f}: {name}\n")
+        now = time.time()
+        result = solution.search_algorithm()
+        if result is None:
+            file.write("No solution found\n")
+        else:
+            file.write(f'{result}\n')
+            file.write(f'{result.get_content()}\n')
+        file.write(f'Time: {time.time() - now}\n\n')
 
 def main():
     # run_benchmark('no02_end_with_01')
+    with open('results.txt', 'w') as file:
+        pass
 
     import os
     files = os.listdir('benchmarks')
