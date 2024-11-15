@@ -1,5 +1,3 @@
-import os
-import search
 from search import GenerateRegex
 
 
@@ -31,8 +29,8 @@ def replace_x_with_permutations(line):
 def read_benchmark(content):
     lines = content.splitlines()
     name = lines[0]
-    P = []
-    N = []
+    p = []
+    n = []
     currently_positive = True
     for line in lines[1:]:
         if line == "++":
@@ -40,15 +38,15 @@ def read_benchmark(content):
         elif line == "--":
             currently_positive = False
         elif currently_positive:
-            P.append(line)
+            p.append(line)
         else:
             for perm in replace_x_with_permutations(line):
-                N.append(perm)
-    return name, P, N
+                n.append(perm)
+    return name, p, n
 
 def run_benchmark(f):
-    name, P, N = read_benchmark(open_file(f'benchmarks/{f}'))
-    solution = GenerateRegex(P, N)
+    name, p, n = read_benchmark(open_file(f'benchmarks/{f}'))
+    solution = GenerateRegex(p, n)
     print(f"{f}: {name}")
     result = solution.search_algorithm()
     if result is None:
