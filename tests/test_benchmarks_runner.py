@@ -66,7 +66,7 @@ def test_read_benchmark(a, b, c):
     assert N == ['100', '0100', '1100', '1000', '1001', '01000', '01001', '11000', '11001']
 
 def test_open_file():
-    name, P, N = benchmarks_runner.read_benchmark(benchmarks_runner.open_file("benchmarks/no1_start_with_0"))
+    name, P, N = benchmarks_runner.read_benchmark(benchmarks_runner.open_file("benchmarks/no01_start_with_0"))
     assert name == "w starts with 0"
     assert P == ["0", "0X", "0XX"]
     assert N == ['1', '10', '11', '100', '101', '110', '111']
