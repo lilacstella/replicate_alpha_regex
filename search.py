@@ -35,8 +35,8 @@ class GenerateRegex:
         # apply all the implied operations upon all holes
         # and discard it after we extract all its states
         output = []
-        # print(f"generating new states from \n{s.content}")
-        clone_root = s.get_root().deepcopy()
+        # print(f"generating new states from \n{s.get_content()}")
+        clone_root = copy.deepcopy(s.get_root())
 
         queue = collections.deque([clone_root])
         while queue:
@@ -46,6 +46,8 @@ class GenerateRegex:
                     # currently I have a reference to the original tree node with a hole
                     node.value = replacement
                     output.append(copy.deepcopy(clone_root))
+
+                # alternating tree to add children
                 node.value = "*"
                 node.children = [RegexNode("☐")]
                 output.append(copy.deepcopy(clone_root))
@@ -58,8 +60,10 @@ class GenerateRegex:
             else:
                 queue.extend(node.children)
 
+        output = [RegexTree(root) for root in output]
+
         # kill dead states
-        matches_all_patterns = lambda state: all(re.fullmatch(state.content.replace("☐", "(.*)"), p) for p in self.P)
+        matches_all_patterns = lambda state: all(re.fullmatch(state.get_content().replace('☐', '(.*)'), p) for p in self.P)
         output = [state for state in output if matches_all_patterns(state)]
 
         # generate and narrow redundant states
@@ -70,7 +74,7 @@ class GenerateRegex:
         return output
 
     def search_algorithm(self):
-        w: list = [RegexTree("☐")]  # Priority queue
+        w: list = [RegexTree()]  # Priority queue
         while w:
             # Get the next element from the priority queue
             s: RegexTree = heapq.heappop(w)
