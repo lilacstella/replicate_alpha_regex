@@ -57,6 +57,11 @@ class RegexNode:
 
             return f"({'|'.join(arr)})"
         if self.value == "⋅":
+            if self.children[0].value == 'ε':
+                return self.children[1].interpret_content()
+            elif self.children[1].value == 'ε':
+                return self.children[0].interpret_content()
+            
             return f"({''.join(arr)})"
         if self.value == "*":
             return f"({self.children[0].interpret_content()}*)"
