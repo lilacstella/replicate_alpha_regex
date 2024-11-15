@@ -22,9 +22,9 @@ class RegexNode:
         if right:
             self.children.append(right)
 
-    def __deepcopy__(self):
+    def __deepcopy__(self, memo={}):
         new_node = RegexNode(self.value)
-        new_node.children = [child.__deepcopy__() for child in self.children]
+        new_node.children = [child.__deepcopy__(memo) for child in self.children]
         return new_node
 
     def print_tree(self, level=0):
@@ -89,12 +89,3 @@ class RegexNode:
             simplified.append(child.simplify())
         self.children = simplified
         return self
-
-def concat(left: RegexNode, right: RegexNode) -> RegexNode:
-    return RegexNode('⋅', left, right)
-
-def union(left: RegexNode, right: RegexNode) -> RegexNode:
-    return RegexNode('∪', left, right)
-
-def star(node: RegexNode) -> RegexNode:
-    return RegexNode('*', node)
