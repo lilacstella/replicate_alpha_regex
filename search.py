@@ -67,10 +67,10 @@ class GenerateRegex:
         output = [state for state in output if matches_all_patterns(state)]
 
         # generate and narrow redundant states
-        # return an iterable of states
         # print("------------------------")
         # for i in output:
         #     print(i.display())
+
         return output
 
     def search_algorithm(self):
@@ -79,6 +79,8 @@ class GenerateRegex:
             # Get the next element from the priority queue
             s: RegexTree = heapq.heappop(w)
 
+            print(s)
+            print(s.get_content())
             # it should fail the states with holes and let next_state fill them in
             if self.solution(s):
                 return s
