@@ -59,16 +59,21 @@ def run_benchmark(f):
             file.write(f'{result.get_content()}\n')
         file.write(f'Time: {time.time() - now}\n\n')
 
-def main():
-    # run_benchmark('no02_end_with_01')
-    with open('results.txt', 'w') as file:
-        pass
-
+def run_all_benchmarks():
     import os
     files = os.listdir('benchmarks')
     files.sort()
     for file in files:
         run_benchmark(file)
+
+def main():
+    reset = True
+    if reset:
+        with open('results.txt', 'w') as file:
+            pass
+
+    # run_benchmark('no01_start_with_0')
+    run_all_benchmarks()
 
 if __name__ == '__main__':
     main()
