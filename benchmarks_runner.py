@@ -3,6 +3,11 @@ import time
 
 
 def open_file(file_path):
+    """
+    Open a file and return its content
+    :param file_path: The filepath to be opened
+    :return: The content of the file as a str
+    """
     with open(file_path, 'r') as file:
         content = file.read()
     return content
@@ -12,6 +17,11 @@ import itertools
 
 
 def replace_x_with_permutations(line):
+    """
+    Replace all X's in a line with all possible permutations of 0 and 1, to expand the examples specified with wildcards
+    :param line: a line from the benchmarks
+    :return: a list of all possible permutations of the line
+    """
     count_x = line.count('X')
     permutations = itertools.product('01', repeat=count_x)
     results = []
@@ -28,6 +38,11 @@ def replace_x_with_permutations(line):
     return results
 
 def read_benchmark(content):
+    """
+    Read the content of a benchmark file and return the name, positive and negative examples
+    :param content: Benchmark file contents as a string in the format of the problem
+    :return: Python variables of the inputs to a regex generation problem
+    """
     lines = content.splitlines()
     name = lines[0]
     p = []
@@ -46,6 +61,11 @@ def read_benchmark(content):
     return name, p, n
 
 def run_benchmark(f):
+    """
+    Execute the search algorithm on a benchmark file and write the results to a file
+    :param f: The filename of the baenchmark file
+    :return: None
+    """
     name, p, n = read_benchmark(open_file(f'benchmarks/{f}'))
     solution = GenerateRegex(p, n)
     with open('results.txt', 'a') as file:
@@ -60,6 +80,10 @@ def run_benchmark(f):
         file.write(f'Time: {time.time() - now}\n\n')
 
 def run_all_benchmarks():
+    """
+    Run all benchmarks in the benchmarks folder
+    :return: None
+    """
     import os
     files = os.listdir('benchmarks')
     files.sort()

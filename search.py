@@ -10,11 +10,25 @@ from regex_node import RegexNode
 # N = ["1", "10", "11", "100", "101"]
 
 class GenerateRegex:
+    """
+    This class represents a problem of generating a regex that matches all positive examples and none of the negative examples.
+    It's attributes pertain to the constraints of the problem.
+    """
     def __init__(self, p, n):
+        """
+        The constructor for the GenerateRegex class.
+        :param p: positive examples as a list of strings
+        :param n: negative examples as a list of strings
+        """
         self.P = p
         self.N = n
 
-    def solution(self, s: RegexTree):
+    def is_solution(self, s: RegexTree):
+        """
+        This function checks if a given state is a solution to the problem.
+        :param s: the regex state to check
+        :return: whether the state is a solution or not
+        """
         if "☐" in s.get_content():
             return False
 
@@ -28,6 +42,12 @@ class GenerateRegex:
         return True
 
     def next_state(self, s: RegexTree):
+        """
+        This function generates the next states from a given state. This is the core of the search algorithm.
+        It generates all possible states from the given state by filling in each hole with all possible values.
+        :param s: regex state to generate next states from
+        :return: potential future states to explore
+        """
         if "☐" not in s.get_content():
             return []
 
@@ -75,6 +95,12 @@ class GenerateRegex:
         return output
 
     def search_algorithm(self):
+        """
+        This function is the main search algorithm for the problem. It uses a priority queue to explore the search space.
+        Iteratively verifying whether a state is a solution or not,
+        and generating the next states from a given state of it has more potential to explore.
+        :return: 
+        """
         start_time = time.time()
         w: list = [RegexTree()]  # Priority queue
         while w:
@@ -86,7 +112,7 @@ class GenerateRegex:
             print(s)
             print(s.get_content())
             # it should fail the states with holes and let next_state fill them in
-            if self.solution(s):
+            if self.is_solution(s):
                 return s
             for potential_state in self.next_state(s):
                 heapq.heappush(w, potential_state)
