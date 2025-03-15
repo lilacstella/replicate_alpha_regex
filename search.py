@@ -83,9 +83,17 @@ class GenerateRegex:
 
         output = [RegexTree(root) for root in output]
 
-        # kill dead states
-        matches_all_patterns = lambda state: all(re.fullmatch(state.get_content().replace('☐', '(.*)'), p) for p in self.P)
-        output = [state for state in output if matches_all_patterns(state)]
+        # kill dead states, match all positive, doesn't match any negative
+        def matches_all_positive(state):
+            # i should actually make an entire clone of the tree, then replace the nodes with .* and check if it matches
+            return all(re.fullmatch(state.get_content().replace('☐', '(.*)'), p) for p in self.P)
+        def matches_no_negative(state):
+            # because here we need to do so in null alphabet and string
+            # so we want to substitute on the tree level, simplify it, and then match the regex
+            # i need to simplify, but not make a permanent change, only for the regex matching
+            return not any(re.fullmatch(state.get_content().replace('☐', '(.*)'), n) for n in self.N)
+
+        output = [state for state in output if matches_all_positive(state) and matches_no_negative(state)]
 
         # generate and narrow redundant states
         # print("------------------------")
