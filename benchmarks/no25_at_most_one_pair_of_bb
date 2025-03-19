@@ -1,0 +1,14 @@
+The set of strings of a's and b's with 
+at most one pair of consecutive b's
+++
+a
+bb
+bababa
+aaabbaaa
+aabaabbaaab
+--
+bbb
+bbaabb
+abbabba
+aaabbaabbaa
+abbbaaabbbba

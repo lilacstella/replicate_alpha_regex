@@ -1,0 +1,14 @@
+does not end with ab
+++
+X
+Xa
+bb
+XXa
+Xbb
+XXXa
+XXbb
+XXXbb
+--
+ab
+Xab
+XXab

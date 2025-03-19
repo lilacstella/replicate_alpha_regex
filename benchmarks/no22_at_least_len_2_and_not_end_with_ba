@@ -1,0 +1,16 @@
+w has length at least 2 and does not end with ba
+++
+aa
+ab
+bb
+Xaa
+Xab
+Xbb
+XXaa
+XXab
+XXbb
+--
+X
+ba
+Xba
+XXba

@@ -1,0 +1,18 @@
+The set of all strings at most two a
+++
+a
+b
+aa
+bb
+babab
+bbabbabb
+bbb
+bbbb
+--
+aaa
+bbabbaba
+bbaaa
+aaabb
+bbababab
+aaaa
+babababab

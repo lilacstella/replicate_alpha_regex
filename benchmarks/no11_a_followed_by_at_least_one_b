@@ -1,0 +1,16 @@
+each a in w is followed by at least one b
+++
+b
+bbb
+ab
+bab
+abb
+abab
+abbab
+--
+a
+aab
+ba
+baba
+ababa
+abbaba

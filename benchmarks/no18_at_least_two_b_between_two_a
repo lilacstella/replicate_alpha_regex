@@ -1,0 +1,18 @@
+There are at least two occurrences of b
+between any two occurrences of a.
+++
+a
+abba
+abbba
+abbbba
+bbb
+abbbb
+bbbbbba
+--
+aa
+aba
+babab
+ababbb
+bbbaba
+aabbbbb
+bbbbbaa

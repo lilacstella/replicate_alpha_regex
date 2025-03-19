@@ -1,0 +1,18 @@
+w contains at least one a and at most one b
+++
+a
+aab
+aaab
+aaba
+abaaa
+baaaaa
+--
+b
+bab
+abba
+baba
+baab
+baaab
+bbbaaa
+abaaaabaa
+aaababaab

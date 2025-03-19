@@ -1,0 +1,19 @@
+w has an even number of a's 
+and each a is followed by at least one b.
+++
+b
+bbb
+abab
+babab
+abbbabb
+abbabbabbbabbb
+--
+a
+aaaa
+aba
+baba
+bba
+baaab
+ab
+aab
+abb

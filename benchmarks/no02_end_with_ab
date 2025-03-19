@@ -1,0 +1,12 @@
+end with ab
+++
+ab
+Xab
+XXab
+--
+aa
+ba
+bb
+Xaa
+Xba
+Xbb

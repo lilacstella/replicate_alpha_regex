@@ -1,0 +1,18 @@
+every odd position of w is b.
+++
+b
+bX
+bXb
+bXbX
+bXbXb
+bXbXbX
+--
+a
+aX
+XXa
+aXXX
+XXaX
+aXXXX
+XXaXX
+XXXXa
+XXXXaX

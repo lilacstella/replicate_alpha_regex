@@ -1,0 +1,15 @@
+w does not contain baa as a substring
+++
+X
+XX
+aXX
+XbX
+XXb
+Xbab
+aXabX
+XXbXbXb
+--
+baa
+Xbaa
+baaX
+XbaaX

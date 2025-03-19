@@ -1,0 +1,14 @@
+w contains the substring abab
+++
+abab
+XababX
+XXababXX
+--
+a
+b
+XX
+XXX
+XXXa
+XaXX
+bXXX
+XXbX

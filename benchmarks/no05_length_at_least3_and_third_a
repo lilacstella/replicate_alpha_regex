@@ -1,0 +1,10 @@
+Length is at least 3 and its 3rd symbol is a.
+++
+XXa
+XXaX
+XXaXX
+--
+X
+XX
+XXb
+XXbX

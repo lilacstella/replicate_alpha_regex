@@ -1,0 +1,11 @@
+w has exactly one pair of consecutive as.
+++
+aa
+baab
+abaaba
+babbaabbba
+--
+ab
+bb
+aaa
+aabaa
