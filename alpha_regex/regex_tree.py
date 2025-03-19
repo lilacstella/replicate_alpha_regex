@@ -1,4 +1,4 @@
-from regex_node import RegexNode
+from alpha_regex.regex_node import RegexNode
 
 class RegexTree:
     """

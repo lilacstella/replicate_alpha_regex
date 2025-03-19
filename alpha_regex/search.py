@@ -3,8 +3,9 @@ import re
 import collections
 import copy
 import time
-from regex_tree import RegexTree
-from regex_node import RegexNode
+from alpha_regex import alphabet
+from alpha_regex.regex_tree import RegexTree
+from alpha_regex.regex_node import RegexNode
 
 # P = ["0", "01", "011", "000", "00"]
 # N = ["1", "10", "11", "100", "101"]
@@ -63,7 +64,7 @@ class GenerateRegex:
         while queue:
             node = queue.popleft()
             if node.value == "☐":
-                for replacement in ["0", "1", "ε", "∅", "."]:
+                for replacement in alphabet.union(set("ε∅.")):
                     # currently I have a reference to the original tree node with a hole
                     node.value = replacement
                     output.append(copy.deepcopy(clone_root))
@@ -84,16 +85,16 @@ class GenerateRegex:
         output = [RegexTree(root) for root in output]
 
         # kill dead states, match all positive, doesn't match any negative
-        def matches_all_positive(state):
-            # i should actually make an entire clone of the tree, then replace the nodes with .* and check if it matches
-            return all(re.fullmatch(state.get_content().replace('☐', '(.*)'), p) for p in self.P)
-        def matches_no_negative(state):
-            # because here we need to do so in null alphabet and string
-            # so we want to substitute on the tree level, simplify it, and then match the regex
-            # i need to simplify, but not make a permanent change, only for the regex matching
-            return not any(re.fullmatch(state.get_content().replace('☐', '(.*)'), n) for n in self.N)
+        # def matches_all_positive(state):
+        #     # i should actually make an entire clone of the tree, then replace the nodes with .* and check if it matches
+        #     return all(re.fullmatch(state.get_content().replace('☐', '(.*)'), p) for p in self.P)
+        # def matches_no_negative(state):
+        #     # because here we need to do so in null alphabet and string
+        #     # so we want to substitute on the tree level, simplify it, and then match the regex
+        #     # i need to simplify, but not make a permanent change, only for the regex matching
+        #     return not any(re.fullmatch(state.get_content().replace('☐', '(.*)'), n) for n in self.N)
 
-        output = [state for state in output if matches_all_positive(state) and matches_no_negative(state)]
+        # output = [state for state in output if matches_all_positive(state) and matches_no_negative(state)]
 
         # generate and narrow redundant states
         # print("------------------------")

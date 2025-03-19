@@ -1,4 +1,5 @@
-from search import GenerateRegex
+from alpha_regex import alphabet
+from alpha_regex.search import GenerateRegex
 import time
 
 
@@ -23,7 +24,7 @@ def replace_x_with_permutations(line):
     :return: a list of all possible permutations of the line
     """
     count_x = line.count('X')
-    permutations = itertools.product('01', repeat=count_x)
+    permutations = itertools.product(alphabet, repeat=count_x)
     results = []
 
     for perm in permutations:
@@ -89,15 +90,3 @@ def run_all_benchmarks():
     files.sort()
     for file in files:
         run_benchmark(file)
-
-def main():
-    reset = True
-    if reset:
-        with open('results.txt', 'w') as file:
-            pass
-
-    # run_benchmark('no01_start_with_0')
-    run_all_benchmarks()
-
-if __name__ == '__main__':
-    main()

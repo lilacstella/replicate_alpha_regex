@@ -1,3 +1,5 @@
+from alpha_regex import alphabet
+
 # 1, 0, ☐, ε, ∅, ., ∪, ⋅, *
 COST_MAP = {
     "☐": 10,
@@ -21,7 +23,7 @@ class RegexNode:
         :param left: potential left child
         :param right: potential right child
         """
-        if value not in ['1', '0', '☐', 'ε', '∅', '.', '∪', '⋅', '*']:
+        if value not in alphabet.union(['☐', 'ε', '∅', '.', '∪', '⋅', '*']):
             print(f"invalid character for node value {value}")
             exit()
 
