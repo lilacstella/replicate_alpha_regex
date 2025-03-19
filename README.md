@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 Then, to execute the project: 
 ```shell
-python benchmark_runners.py
+python -m alpha_regex
 ```
 
 ### Output
