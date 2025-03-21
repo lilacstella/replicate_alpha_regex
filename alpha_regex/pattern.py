@@ -209,6 +209,7 @@ class Symbol(Pattern):
 class Box(Symbol):
     def __init__(self):
         super().__init__(symbol='☐')
+        self.future = None
 
     def _compute_str(self):
         return self.symbol
