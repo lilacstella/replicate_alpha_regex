@@ -15,8 +15,11 @@ class Pattern:
             raise ValueError("Pattern must be either a symbol or a list of members")
         self.symbol = symbol
         self.members = members
-        self.cost = -1
+
+        # memoized variables
+        self._cost = -1
         self._str_cache = None
+        self._box_cache = None
 
     def __str__(self):
         if not self._str_cache:
@@ -38,7 +41,18 @@ class Pattern:
             new_node = self.__class__()
             new_node.members = [copy.deepcopy(member, memo) for member in self.members]
             memo[self] = new_node
-        return new_node
+
+        return memo[self]
+
+    def contains_box(self):
+        if self.__class__ is Box:
+            return True
+
+        if self._box_cache is not None:
+            return self._box_cache
+
+        self._box_cache = any(member.contains_box() for member in self.members)
+        return self._box_cache
 
     """
     operations
@@ -92,9 +106,9 @@ class Pattern:
         return self.get_cost() < other.get_cost()
 
     def get_cost(self) -> int:
-        if self.cost == -1:
-            self.cost = self._calculate_cost()
-        return self.cost
+        if self._cost == -1:
+            self._cost = self._calculate_cost()
+        return self._cost
 
     def _calculate_cost(self) -> int:
         raise NotImplementedError("Should be implemented by child")
