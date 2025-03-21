@@ -4,8 +4,7 @@ import collections
 import copy
 import time
 from alpha_regex import alphabet
-from alpha_regex.regex_tree import RegexTree
-from alpha_regex.regex_node import RegexNode
+from alpha_regex.pattern import Pattern, Symbol, Union, Concatenation, Symbol, Box
 
 # P = ["0", "01", "011", "000", "00"]
 # N = ["1", "10", "11", "100", "101"]
@@ -24,20 +23,21 @@ class GenerateRegex:
         self.P = p
         self.N = n
 
-    def is_solution(self, s: RegexTree):
+    def is_solution(self, pattern: Pattern):
         """
         This function checks if a given state is a solution to the problem.
-        :param s: the regex state to check
+        :param pattern: the regex state to check
         :return: whether the state is a solution or not
         """
-        if "☐" in s.get_content():
+        # save some effort str-ifying the pattern
+        if pattern.contains_box():
             return False
 
         for p in self.P:
-            if not re.fullmatch(s.get_content(), p):
+            if not re.fullmatch(str(pattern), p):
                 return False
         for n in self.N:
-            if re.fullmatch(s.get_content(), n):
+            if re.fullmatch(str(pattern), n):
                 return False
 
         return True
@@ -111,19 +111,19 @@ class GenerateRegex:
         :return: 
         """
         start_time = time.time()
-        w: list = [RegexTree()]  # Priority queue
+        state_count = 0
+        w: list = [Box()]  # Priority queue
         while w:
             if time.time() - start_time > 30:
                 return None
             # Get the next element from the priority queue
-            s: RegexTree = heapq.heappop(w)
-
+            s: Pattern = heapq.heappop(w)
             print(s)
-            print(s.get_content())
+            state_count += 1
             # it should fail the states with holes and let next_state fill them in
             if self.is_solution(s):
-                return s
-            for potential_state in self.next_state(s):
+                return s, state_count
+            for potential_state in next_state(s):
                 heapq.heappush(w, potential_state)
 
-        return None
+        return None, state_count
