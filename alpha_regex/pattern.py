@@ -16,8 +16,14 @@ class Pattern:
         self.symbol = symbol
         self.members = members
         self.cost = -1
+        self._str_cache = None
 
     def __str__(self):
+        if not self._str_cache:
+            self._str_cache = self._compute_str()
+        return self._str_cache
+
+    def _compute_str(self):
         raise NotImplementedError("Should be implemented by child")
 
     def __deepcopy__(self, memo={}):
@@ -85,13 +91,13 @@ class Pattern:
         """
         return self.get_cost() < other.get_cost()
 
-    def calculate_cost(self) -> int:
-        raise NotImplementedError("Should be implemented by child")
-
     def get_cost(self) -> int:
         if self.cost == -1:
-            self.cost = self.calculate_cost()
+            self.cost = self._calculate_cost()
         return self.cost
+
+    def _calculate_cost(self) -> int:
+        raise NotImplementedError("Should be implemented by child")
 
 
 class Union(Pattern):
@@ -110,7 +116,7 @@ class Union(Pattern):
         members = list(set(members))
         super().__init__(members=members)
 
-    def __str__(self):
+    def _compute_str(self):
         # I am trying to make question mark if one of them is epsilon
         if len(self.members) == 2:
             if self.members[0].symbol == 'ε':
@@ -123,8 +129,8 @@ class Union(Pattern):
                 return f"({self.members[0]})?"
         return f"({'|'.join(str(member) for member in self.members)})"
 
-    def calculate_cost(self) -> int:
-        return (len(self.members) - 1) * COST_MAP['∪'] + sum([member.calculate_cost() for member in self.members])
+    def _calculate_cost(self) -> int:
+        return (len(self.members) - 1) * COST_MAP['∪'] + sum([member.get_cost() for member in self.members])
 
 
 class Concatenation(Pattern):
@@ -141,13 +147,13 @@ class Concatenation(Pattern):
 
         super().__init__(members=first + second)
 
-    def __str__(self):
+    def _compute_str(self):
         # keep all non-ε
         self.members = [member for member in self.members if member.symbol != 'ε']
 
         return ''.join(str(member) for member in self.members)
 
-    def calculate_cost(self) -> int:
+    def _calculate_cost(self) -> int:
         return (len(self.members) - 1) * COST_MAP['⋅'] + sum([member.calculate_cost() for member in self.members])
 
 
@@ -155,23 +161,23 @@ class Star(Pattern):
     def __init__(self, first: Pattern):
         super().__init__(members=[first])
 
-    def __str__(self):
+    def _compute_str(self):
         if isinstance(self.members[0], Symbol) or str(self.members[0])[-1] == ')':
             return f"{self.members[0]}*"
         return f"({self.members[0]})*"
 
-    def calculate_cost(self) -> int:
-        return COST_MAP['*'] + self.members[0].calculate_cost()
+    def _calculate_cost(self) -> int:
+        return COST_MAP['*'] + self.members[0].get_cost()
 
 
 class Symbol(Pattern):
     def __init__(self, symbol: str):
         super().__init__(symbol=symbol)
 
-    def __str__(self):
+    def _compute_str(self):
         return self.symbol
 
-    def calculate_cost(self) -> int:
+    def _calculate_cost(self) -> int:
         return 1
 
     @staticmethod
@@ -190,8 +196,8 @@ class Box(Symbol):
     def __init__(self):
         super().__init__(symbol='☐')
 
-    def __str__(self):
+    def _compute_str(self):
         return self.symbol
 
-    def calculate_cost(self) -> int:
+    def _calculate_cost(self) -> int:
         return COST_MAP['☐']
