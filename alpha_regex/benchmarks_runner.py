@@ -72,13 +72,14 @@ def run_benchmark(f):
     with open('results.txt', 'a') as file:
         file.write(f"{f}: {name}\n")
         now = time.time()
-        result = solution.search_algorithm()
+        result, state_count = solution.search_algorithm()
         if result is None:
-            file.write("No solution found\n")
+            file.write("DNF\n")
         else:
             file.write(f'{result}\n')
-            file.write(f'{result.get_content()}\n')
-        file.write(f'Time: {time.time() - now}\n\n')
+            file.write(f'{str(result)}\n')
+        file.write(f'Time: {time.time() - now}\n')
+        file.write(f'States explored: {state_count}\n\n')
 
 def run_all_benchmarks():
     """
