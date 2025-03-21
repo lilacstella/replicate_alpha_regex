@@ -26,7 +26,7 @@ class Pattern:
     def _compute_str(self):
         raise NotImplementedError("Should be implemented by child")
 
-    def __deepcopy__(self, memo={}):
+    def __deepcopy__(self, memo=None):
         if memo is None:
             memo = {}
         if self in memo:
