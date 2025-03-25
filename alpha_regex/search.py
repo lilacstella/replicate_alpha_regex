@@ -116,14 +116,8 @@ class GenerateRegex:
                     new_states.append(copy.deepcopy(pattern))
             else:
                 queue.extend(pattern.members)
-
-        output = self.kill_redundant_states(self.kill_dead_states(new_states))
-        # generate and narrow redundant states
-        # print("------------------------")
-        # for i in output:
-        #     print(i.display())
-
-        return output
+        
+        return self.kill_redundant_states(self.kill_dead_states(new_states))
 
     def search_algorithm(self):
         """
