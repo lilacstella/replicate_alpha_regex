@@ -7,9 +7,6 @@ from alpha_regex import alphabet
 from alpha_regex.pattern import Pattern, Union, Concatenation, Star, Symbol, Box
 
 
-# P = ["0", "01", "011", "000", "00"]
-# N = ["1", "10", "11", "100", "101"]
-
 class GenerateRegex:
     """
     This class represents a problem of generating a regex that matches all positive examples and none of the negative examples.
@@ -116,7 +113,7 @@ class GenerateRegex:
                     new_states.append(copy.deepcopy(pattern))
             else:
                 queue.extend(pattern.members)
-        
+
         return self.kill_redundant_states(self.kill_dead_states(new_states))
 
     def search_algorithm(self):
