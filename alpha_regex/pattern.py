@@ -10,6 +10,9 @@ COST_MAP = {
 }
 
 class Pattern:
+    """
+    should be treated as immutable
+    """
     def __init__(self, symbol: str = None, members: list['Pattern'] = None):
         if symbol and members:
             raise ValueError("Pattern must be either a symbol or a list of members")
@@ -29,23 +32,27 @@ class Pattern:
     def _compute_str(self):
         raise NotImplementedError("Should be implemented by child")
 
+    """
+    search and heuristic functions
+    """
+
     def __deepcopy__(self, memo=None):
         if memo is None:
             memo = {}
         if self in memo:
             return memo[self]
 
-        if self.symbol:
+        if isinstance(self, Box):
+            memo[self] = Box()
+        elif self.symbol:
             memo[self] = Symbol(self.symbol)
         else:
-            new_node = self.__class__()
-            new_node.members = [copy.deepcopy(member, memo) for member in self.members]
-            memo[self] = new_node
+            memo[self] = self.__class__(members=[copy.deepcopy(member, memo) for member in self.members])
 
         return memo[self]
 
     def contains_box(self):
-        if self.__class__ is Box:
+        if isinstance(self, Box):
             return True
 
         if self._box_cache is not None:
@@ -53,6 +60,26 @@ class Pattern:
 
         self._box_cache = any(member.contains_box() for member in self.members)
         return self._box_cache
+
+    def simplify(self):
+        raise NotImplementedError("Should be implemented by child")
+
+    def replace_all_box(self, replacement: 'Pattern') -> 'Pattern':
+        if isinstance(self, Box):
+            if self.future:
+                return self.future.replace_all_box(replacement)
+            return replacement
+
+        if isinstance(self, Symbol):
+            return self
+
+        return self.__class__(members=[member.replace_all_box(replacement) for member in self.members])
+
+    def overestimate(self):
+        return self.replace_all_box(Symbol.any_symbol().star()).simplify()
+
+    def underestimate(self):
+        return self.replace_all_box(Symbol.empty_lang()).simplify()
 
     """
     operations
@@ -146,6 +173,19 @@ class Union(Pattern):
     def _calculate_cost(self) -> int:
         return (len(self.members) - 1) * COST_MAP['∪'] + sum([member.get_cost() for member in self.members])
 
+    def simplify(self):
+        foo = self.members[0]
+        for member in self.members[1:]:
+            foo |= member.simplify()
+
+        return foo
+
+    @staticmethod
+    def set_members(members):
+        # should only be used in split for constructing arbitrary unions
+        temp = Union(Symbol.empty_string(), Symbol.empty_string())
+        temp.members = members
+        return temp
 
 class Concatenation(Pattern):
     def __init__(self, first: Pattern, second: Pattern):
@@ -170,6 +210,19 @@ class Concatenation(Pattern):
     def _calculate_cost(self) -> int:
         return (len(self.members) - 1) * COST_MAP['⋅'] + sum([member.calculate_cost() for member in self.members])
 
+    def simplify(self):
+        foo = self.members[0]
+        for member in self.members[1:]:
+            foo += member.simplify()
+
+        return foo
+
+    @staticmethod
+    def set_members(members):
+        # should only be used in split for constructing arbitrary unions
+        temp = Concatenation(Symbol.empty_string(), Symbol.empty_string())
+        temp.members = members
+        return temp
 
 class Star(Pattern):
     def __init__(self, first: Pattern):
@@ -183,6 +236,11 @@ class Star(Pattern):
     def _calculate_cost(self) -> int:
         return COST_MAP['*'] + self.members[0].get_cost()
 
+    def simplify(self):
+        if isinstance(self.members[0], Star):
+            return self.members[0].simplify()
+        return self.members[0].simplify().star()
+
 
 class Symbol(Pattern):
     def __init__(self, symbol: str):
@@ -193,6 +251,9 @@ class Symbol(Pattern):
 
     def _calculate_cost(self) -> int:
         return 1
+
+    def simplify(self):
+        return self
 
     @staticmethod
     def empty_string():
@@ -206,7 +267,7 @@ class Symbol(Pattern):
     def any_symbol():
         return Symbol('.')
 
-class Box(Symbol):
+class Box(Pattern):
     def __init__(self):
         super().__init__(symbol='☐')
         self.future = None
@@ -216,3 +277,11 @@ class Box(Symbol):
 
     def _calculate_cost(self) -> int:
         return COST_MAP['☐']
+
+    def simplify(self):
+        if self.future:
+            return self.future.simplify()
+        return self
+
+    def set_future(self, future: Pattern):
+        self.future = future
