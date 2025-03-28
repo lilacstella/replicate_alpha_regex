@@ -76,8 +76,9 @@ def run_benchmark(f):
         if result is None:
             file.write("DNF\n")
         else:
-            file.write(f'{result}\n')
-            file.write(f'{str(result)}\n')
+            file.write(f'regex: {result}\n')
+            file.write('tree structure:\n')
+            file.write(f'{result.display_tree()}\n')
         file.write(f'Time: {time.time() - now}\n')
         file.write(f'States explored: {state_count}\n\n')
 

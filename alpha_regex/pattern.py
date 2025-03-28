@@ -32,38 +32,50 @@ class Pattern:
     def _compute_str(self):
         raise NotImplementedError("Should be implemented by child")
 
-    def print_tree(self, level=0):
+    def display_tree(self, level=0):
         indent = "  " * level
+        result = ""
         if self.symbol == '☐':
-            print(f"{indent}{self.symbol} -> {self.future}")
+            result += f"{indent}{self.symbol} -> {self.future}\n"
         elif self.symbol:
-            print(f"{indent}{self.symbol}")
+            result += f"{indent}{self.symbol}\n"
         else:
-            print(f"{indent}{self.__class__.__name__}")
+            result += f"{indent}{self.__class__.__name__}\n"
             for member in self.members:
-                member.print_tree(level + 1)
+                result += member.display_tree(level + 1)
+        return result
+
     """
     search and heuristic functions
     """
 
     def __deepcopy__(self, memo=None):
+        # takes care of moving future one level up
         if memo is None:
             memo = {}
         if self in memo:
             return memo[self]
 
         if isinstance(self, Box):
-            memo[self] = Box()
+            if self.future:
+                memo[self] = self.future
+            else:
+                memo[self] = Box()
         elif self.symbol:
             memo[self] = Symbol(self.symbol)
-        else:
-            memo[self] = self.__class__(members=[copy.deepcopy(member, memo) for member in self.members])
+        elif isinstance(self, Star):
+            memo[self] = copy.deepcopy(self.members[0]).star()
+        elif isinstance(self, Union) or isinstance(self, Concatenation):
+            memo[self] = self.__class__.set_members([copy.deepcopy(member) for member in self.members])
 
         return memo[self]
 
     def contains_box(self):
         if isinstance(self, Box):
             return True
+
+        if self.symbol:
+            return False
 
         if self._box_cache is not None:
             return self._box_cache
@@ -218,7 +230,7 @@ class Concatenation(Pattern):
         return ''.join(str(member) for member in self.members)
 
     def _calculate_cost(self) -> int:
-        return (len(self.members) - 1) * COST_MAP['⋅'] + sum([member.calculate_cost() for member in self.members])
+        return (len(self.members) - 1) * COST_MAP['⋅'] + sum([member.get_cost() for member in self.members])
 
     def simplify(self):
         foo = self.members[0]
@@ -289,8 +301,6 @@ class Box(Pattern):
         return COST_MAP['☐']
 
     def simplify(self):
-        if self.future:
-            return self.future.simplify()
         return self
 
     def set_future(self, future: Pattern):
