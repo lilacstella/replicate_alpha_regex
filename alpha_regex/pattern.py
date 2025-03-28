@@ -32,6 +32,16 @@ class Pattern:
     def _compute_str(self):
         raise NotImplementedError("Should be implemented by child")
 
+    def print_tree(self, level=0):
+        indent = "  " * level
+        if self.symbol == '☐':
+            print(f"{indent}{self.symbol} -> {self.future}")
+        elif self.symbol:
+            print(f"{indent}{self.symbol}")
+        else:
+            print(f"{indent}{self.__class__.__name__}")
+            for member in self.members:
+                member.print_tree(level + 1)
     """
     search and heuristic functions
     """
