@@ -115,6 +115,11 @@ class Pattern:
         if self.symbol == 'ε' and other.symbol == 'ε':
             return Symbol.empty_string()
 
+        if isinstance(self, Star) and other.symbol == 'ε':
+            return self
+        elif isinstance(other, Star) and self.symbol == 'ε':
+            return other
+
         # if the members consists of the entire alphabet, return any symbol
         if (isinstance(self, Symbol) and self.symbol == '.') or (isinstance(other, Symbol) and other.symbol == '.'):
             return Symbol.any_symbol()
@@ -133,7 +138,7 @@ class Pattern:
             return Symbol.empty_lang()
 
         if isinstance(self, Star) and isinstance(other, Star):
-            if self.members[0].symbol == other.members[0].symbol:
+            if isinstance(self.members[0], Symbol) and self.members[0].symbol == other.members[0].symbol:
                 return self
 
         return Concatenation(self, other)
@@ -196,7 +201,10 @@ class Union(Pattern):
         return (len(self.members) - 1) * COST_MAP['∪'] + sum([member.get_cost() for member in self.members])
 
     def simplify(self):
-        foo = self.members[0]
+        if len(self.members) == 0:
+            return Symbol.empty_lang()
+
+        foo = self.members[0].simplify()
         for member in self.members[1:]:
             foo |= member.simplify()
 
@@ -233,7 +241,10 @@ class Concatenation(Pattern):
         return (len(self.members) - 1) * COST_MAP['⋅'] + sum([member.get_cost() for member in self.members])
 
     def simplify(self):
-        foo = self.members[0]
+        if len(self.members) == 0:
+            return Symbol.empty_lang()
+
+        foo = self.members[0].simplify()
         for member in self.members[1:]:
             foo += member.simplify()
 
@@ -259,6 +270,9 @@ class Star(Pattern):
         return COST_MAP['*'] + self.members[0].get_cost()
 
     def simplify(self):
+        if len(self.members) == 0:
+            return Symbol.empty_lang()
+
         if isinstance(self.members[0], Star):
             return self.members[0].simplify()
         return self.members[0].simplify().star()

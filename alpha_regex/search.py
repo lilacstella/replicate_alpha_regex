@@ -50,7 +50,7 @@ class GenerateRegex:
     def kill_dead_states(self, states: list[Pattern]):
         # kill dead states, match all positive, doesn't match any negative
         return [
-            state.simplify()
+            state
             for state in states
             if self.matches_all_positive(state) and self.matches_no_negative(state)
         ]
@@ -99,22 +99,25 @@ class GenerateRegex:
         queue = collections.deque([rejected_pattern])
         while queue:
             pattern = queue.popleft()
+            if isinstance(pattern, Symbol):
+                continue
             if isinstance(pattern, Box):
                 for symbol in alphabet.union(set("ε∅.")):
                     pattern.set_future(Symbol(symbol))
-                    new_states.append(copy.deepcopy(pattern))
+                    new_states.append(copy.deepcopy(rejected_pattern))
 
                 for operation in [
-                    (Box() + Box()),
-                    (Box() | Box()),
-                    (Box().star())
+                    Box() + Box(),
+                    Box() | Box(),
+                    Box().star()
                 ]:
                     pattern.set_future(operation)
-                    new_states.append(copy.deepcopy(pattern))
+                    new_states.append(copy.deepcopy(rejected_pattern))
             else:
                 queue.extend(pattern.members)
-
-        return self.kill_redundant_states(self.kill_dead_states(new_states))
+        
+        # return self.kill_redundant_states(self.kill_dead_states(new_states))
+        return [state for state in new_states]
 
     def search_algorithm(self):
         """
@@ -125,18 +128,25 @@ class GenerateRegex:
         """
         start_time = time.time()
         state_count = 0
+        explored = set()
         w: list = [Box()]  # Priority queue
         while w:
-            if time.time() - start_time > 30:
-                return None
+            if time.time() - start_time > 120:
+                return None, state_count
             # Get the next element from the priority queue
             s: Pattern = heapq.heappop(w)
-            print(s)
+            # the empty lang is making this concatenation empty
+            if not s.contains_box():
+                s = s.simplify()
+
             state_count += 1
             # it should fail the states with holes and let next_state fill them in
             if self.is_solution(s):
                 return s, state_count
             for potential_state in self.next_state(s):
+                if str(potential_state) in explored:
+                    continue
                 heapq.heappush(w, potential_state)
+                explored.add(str(potential_state))
 
         return None, state_count
