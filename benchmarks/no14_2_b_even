@@ -1,0 +1,14 @@
+w starts with b and has even length
+++
+bX
+bXXX
+bXXXXX
+--
+a
+aX
+aXX
+aXXX
+aXXXX
+b
+bXX
+bXXXX

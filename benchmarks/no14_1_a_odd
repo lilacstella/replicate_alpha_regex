@@ -1,0 +1,14 @@
+w starts with a and has odd length
+++
+a
+aXX
+aXXXX
+aXXXXXX
+--
+aX
+aXXX
+b
+bX
+bXX
+bXXX
+bXXXX
