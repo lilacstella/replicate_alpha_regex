@@ -70,6 +70,14 @@ def test_simplify_union_null():
     print(simplified_pattern.display_tree())
     assert pattern.display_tree() != simplified_pattern.display_tree()
 
+def test_simplify_concatenation_null():
+    pattern = Concatenation(Symbol.empty_lang(), Star(Symbol.any_symbol()))
+    print(pattern.display_tree())
+    simplified_pattern = pattern.simplify()
+    print(simplified_pattern.display_tree())
+    assert pattern.display_tree() != simplified_pattern.display_tree()
+    assert simplified_pattern.display_tree() == "∅"
+
 def test_simplify_union_empty_string():
     """
     Union
