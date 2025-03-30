@@ -53,20 +53,20 @@ class Pattern:
         # takes care of moving future one level up
         if memo is None:
             memo = {}
-        if self in memo:
+        elif self in memo:
             return memo[self]
 
         if isinstance(self, Box):
             if self.future:
-                memo[self] = self.future
+                memo[self] = copy.deepcopy(self.future)
             else:
                 memo[self] = Box()
         elif self.symbol:
             memo[self] = Symbol(self.symbol)
         elif isinstance(self, Star):
-            memo[self] = copy.deepcopy(self.members[0]).star()
+            memo[self] = copy.deepcopy(self.members[0], memo).star()
         elif isinstance(self, Union) or isinstance(self, Concatenation):
-            memo[self] = self.__class__.set_members([copy.deepcopy(member) for member in self.members])
+            memo[self] = self.__class__.set_members([copy.deepcopy(member, memo) for member in self.members])
 
         return memo[self]
 
@@ -88,14 +88,18 @@ class Pattern:
 
     def replace_all_box(self, replacement: 'Pattern') -> 'Pattern':
         if isinstance(self, Box):
+            # ASSUMPTION: no boxes will have futures now
             if self.future:
-                return self.future.replace_all_box(replacement)
+                raise ValueError("Box should not have a future")
             return replacement
 
         if isinstance(self, Symbol):
             return self
 
-        return self.__class__(members=[member.replace_all_box(replacement) for member in self.members])
+        if isinstance(self, Star):
+            return self.members[0].replace_all_box(replacement).star()
+
+        return self.__class__.set_members([member.replace_all_box(replacement) for member in self.members])
 
     def overestimate(self):
         return self.replace_all_box(Symbol.any_symbol().star()).simplify()
@@ -136,6 +140,13 @@ class Pattern:
     def __add__(self, other):
         if self.symbol == '∅' or other.symbol == '∅':
             return Symbol.empty_lang()
+
+        if self.symbol == 'ε':
+            if other.symbol == 'ε':
+                return Symbol.empty_string()
+            return other
+        elif other.symbol == 'ε':
+            return self
 
         if isinstance(self, Star) and isinstance(other, Star):
             if isinstance(self.members[0], Symbol) and self.members[0].symbol == other.members[0].symbol:
