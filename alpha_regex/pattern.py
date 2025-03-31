@@ -278,7 +278,11 @@ class Star(Pattern):
 
         if isinstance(self.members[0], Star):
             return self.members[0].simplify()
-        return self.members[0].simplify().star()
+
+        simplified_member = self.members[0].simplify()
+        if isinstance(simplified_member, Star):
+            return simplified_member
+        return simplified_member.star()
 
 
 class Symbol(Pattern):
