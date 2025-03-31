@@ -1,13 +1,5 @@
-from alpha_regex import alphabet
+from alpha_regex import alphabet, COST_MAP
 import copy
-
-# 1, 0, ☐, ε, ∅, ., ∪, ⋅, *
-COST_MAP = {
-    "☐": 10,
-    "∪": 6,
-    "⋅": 5,
-    "*": 5,
-}
 
 class Pattern:
     """
