@@ -1,6 +1,4 @@
-The set of all strings of as and bs such that
-every pair of adjacent as appears
-before any pair of adjacent bs.
+The set of all strings of as and bs such that every pair of adjacent as appears before any pair of adjacent bs.
 ++
 a
 b
