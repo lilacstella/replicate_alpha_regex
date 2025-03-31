@@ -299,7 +299,7 @@ class Symbol(Pattern):
         return self.symbol
 
     def _calculate_cost(self) -> int:
-        return 1
+        return COST_MAP['a']
 
     def simplify(self):
         return self
