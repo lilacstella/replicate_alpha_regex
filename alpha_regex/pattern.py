@@ -116,6 +116,12 @@ class Pattern:
         elif isinstance(other, Star) and self.symbol == 'ε':
             return other
 
+        # short circuit two boxes case
+        if isinstance(self, Box) and isinstance(other, Box):
+            return Union(self, other)
+        if str(self) == str(other):
+            return self
+
         # if the members consists of the entire alphabet, return any symbol
         if (isinstance(self, Symbol) and self.symbol == '.') or (isinstance(other, Symbol) and other.symbol == '.'):
             return Symbol.any_symbol()
